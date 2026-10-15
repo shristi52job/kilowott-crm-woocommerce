@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kilowott CRM | WooCommerce Agentic Integration</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Top Navigation -->
+    <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-500 flex items-center justify-center font-bold text-xl text-white shadow">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">Kilowott CRM <span class="text-xs font-medium px-2 py-0.5 rounded bg-indigo-700 text-indigo-200 ml-2">WooCommerce Integration</span></h1>
+                    <p class="text-xs text-indigo-200">Customer Management • Order Tracking • Agentic AI Workflows</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                    <span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                    Webhook Listener Online
+                </span>
+                <button onclick="seedDemo()" class="text-xs bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Seed Demo Data
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Top Notification Banner -->
+        <div id="alert-banner" class="hidden rounded-lg p-3 text-sm font-medium transition flex items-center justify-between shadow-sm"></div>
+
+        <!-- WooCommerce Event Simulator Bar -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-base font-semibold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-amber-500"></i> WooCommerce Webhook Simulator
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Emulate live WooCommerce order events to trigger the autonomous AI agent loop in real time.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <select id="sim-scenario" class="text-xs border border-slate-300 rounded-lg px-3 py-2 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+                        <option value="first_time">Scenario 1: First-Time Buyer (Welcome Flow)</option>
+                        <option value="vip_purchase">Scenario 2: High-Value VIP Purchase (Executive Perks)</option>
+                        <option value="repeat_purchase">Scenario 3: Repeat Buyer (Loyalty & Cross-Sell)</option>
+                        <option value="negative_feedback">Scenario 4: Urgent Note / Negative Sentiment (Support Escalation)</option>
+                        <option value="cancelled_dissatisfied">Scenario 5: Order Cancelled / Churn Risk (Retention Care)</option>
+                    </select>
+                    <button onclick="triggerSimulator()" id="sim-btn" class="text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-paper-plane"></i> Send Webhook Event
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI Metrics Grid -->
+        <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Revenue</p>
+                <p id="metric-revenue" class="text-xl font-bold text-slate-900 mt-1">₹0</p>
+                <span class="text-[11px] text-emerald-600 font-medium"><i class="fa-solid fa-arrow-trend-up"></i> Live Tracking</span>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Customers</p>
+                <p id="metric-customers" class="text-xl font-bold text-slate-900 mt-1">0</p>
+                <span class="text-[11px] text-slate-500">Profiles synced</span>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Orders</p>
+                <p id="metric-orders" class="text-xl font-bold text-slate-900 mt-1">0</p>
+                <span class="text-[11px] text-indigo-600">WooCommerce</span>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">VIP Tier</p>
+                <p id="metric-vip" class="text-xl font-bold text-amber-600 mt-1">0</p>
+                <span class="text-[11px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-medium">High LTV</span>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">At Risk</p>
+                <p id="metric-atrisk" class="text-xl font-bold text-rose-600 mt-1">0</p>
+                <span class="text-[11px] text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded font-medium">Retention</span>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AI Drafts</p>
+                <p id="metric-drafts" class="text-xl font-bold text-indigo-600 mt-1">0</p>
+                <span class="text-[11px] text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-medium">Agent Queue</span>
+            </div>
+        </section>
+
+        <!-- Main Workspace Tabs -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <!-- Tab Navigation Header -->
+            <div class="border-b border-slate-200 bg-slate-50/50 px-4 flex space-x-6">
+                <button onclick="switchTab('comms')" id="tab-btn-comms" class="py-3 px-1 border-b-2 border-indigo-600 text-indigo-600 font-semibold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-robot"></i> Agentic AI Workflows (<span id="count-comms">0</span>)
+                </button>
+                <button onclick="switchTab('customers')" id="tab-btn-customers" class="py-3 px-1 border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i> Customer Profiles (<span id="count-customers">0</span>)
+                </button>
+                <button onclick="switchTab('orders')" id="tab-btn-orders" class="py-3 px-1 border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-box-open"></i> Order Tracking (<span id="count-orders">0</span>)
+                </button>
+            </div>
+
+            <!-- TAB 1: Agentic AI Workflows -->
+            <div id="tab-comms" class="p-5 space-y-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <div>
+                        <h3 class="text-sm font-semibold text-slate-800">Autonomous Communication Engine</h3>
+                        <p class="text-xs text-slate-500">Every message is automatically generated by the AI agent following customer classification and sentiment extraction.</p>
+                    </div>
+                </div>
+                <div id="comms-container" class="space-y-4">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- TAB 2: Customer Profiles -->
+            <div id="tab-customers" class="p-5 hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-50 text-slate-700 uppercase font-semibold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">Customer</th>
+                                <th class="p-3">Email</th>
+                                <th class="p-3">Lifecycle Stage</th>
+                                <th class="p-3">Total Spent</th>
+                                <th class="p-3">Orders</th>
+                                <th class="p-3">Tags</th>
+                                <th class="p-3">Last Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customers-table-body" class="divide-y divide-slate-100">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 3: Order Tracking -->
+            <div id="tab-orders" class="p-5 hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-50 text-slate-700 uppercase font-semibold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">Woo Order #</th>
+                                <th class="p-3">Customer</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3">Amount</th>
+                                <th class="p-3">Purchased Items</th>
+                                <th class="p-3">Customer Notes</th>
+                                <th class="p-3">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body" class="divide-y divide-slate-100">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-xs text-slate-400">
+        Kilowott Placement Hackathon Submission • Customer Relationship Management & WooCommerce Integration
+    </footer>
+
+    <!-- App JavaScript -->
+    <script>
+        let currentTab = 'comms';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            ['comms', 'customers', 'orders'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-btn-${t}`).classList.remove('border-indigo-600', 'text-indigo-600');
+                document.getElementById(`tab-btn-${t}`).classList.add('border-transparent', 'text-slate-600');
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tab}`).classList.add('border-indigo-600', 'text-indigo-600');
+            document.getElementById(`tab-btn-${tab}`).classList.remove('border-transparent', 'text-slate-600');
+        }
+
+        function showAlert(msg, isSuccess = true) {
+            const banner = document.getElementById('alert-banner');
+            banner.textContent = msg;
+            banner.className = isSuccess 
+                ? 'rounded-lg p-3 text-xs font-medium transition flex items-center justify-between shadow-sm bg-emerald-50 text-emerald-800 border border-emerald-200' 
+                : 'rounded-lg p-3 text-xs font-medium transition flex items-center justify-between shadow-sm bg-rose-50 text-rose-800 border border-rose-200';
+            banner.classList.remove('hidden');
+            setTimeout(() => { banner.classList.add('hidden'); }, 4000);
+        }
+
+        async function refreshData() {
+            try {
+                // Fetch Metrics
+                const metricsRes = await fetch('/api/metrics');
+                const metrics = await metricsRes.json();
+                document.getElementById('metric-revenue').textContent = `₹${metrics.total_revenue.toLocaleString('en-IN')}`;
+                document.getElementById('metric-customers').textContent = metrics.total_customers;
+                document.getElementById('metric-orders').textContent = metrics.total_orders;
+                document.getElementById('metric-vip').textContent = metrics.vip_count;
+                document.getElementById('metric-atrisk').textContent = metrics.at_risk_count;
+                document.getElementById('metric-drafts').textContent = metrics.pending_comms;
+
+                // Fetch Comms
+                const commsRes = await fetch('/api/communications');
+                const comms = await commsRes.json();
+                document.getElementById('count-comms').textContent = comms.length;
+                renderComms(comms);
+
+                // Fetch Customers
+                const custRes = await fetch('/api/customers');
+                const customers = await custRes.json();
+                document.getElementById('count-customers').textContent = customers.length;
+                renderCustomers(customers);
+
+                // Fetch Orders
+                const ordersRes = await fetch('/api/orders');
+                const orders = await ordersRes.json();
+                document.getElementById('count-orders').textContent = orders.length;
+                renderOrders(orders);
+
+            } catch (err) {
+                console.error("Data refresh failed", err);
+            }
+        }
+
+        function renderComms(comms) {
+            const container = document.getElementById('comms-container');
+            if (!comms || comms.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-slate-400">
+                        <i class="fa-solid fa-inbox text-3xl mb-2"></i>
+                        <p class="text-xs">No communication workflows generated yet. Click 'Send Webhook Event' above to trigger the AI agent!</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = comms.map(c => `
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 shadow-sm hover:border-indigo-300 transition space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[11px] font-semibold ${c.status === 'sent' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                ${c.status === 'sent' ? '✓ SENT' : 'DRAFT'}
+                            </span>
+                            <span class="text-xs font-bold text-slate-800">${c.subject}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                            <span>To: <strong class="text-slate-700">${c.customer_email}</strong></span>
+                            <span>•</span>
+                            <span>${new Date(c.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        </div>
+                    </div>
+
+                    <!-- Agent Reasoning Card -->
+                    <div class="bg-indigo-50/80 border border-indigo-100 rounded p-2.5 text-xs text-indigo-900 flex items-start gap-2">
+                        <i class="fa-solid fa-sparkles text-indigo-500 mt-0.5"></i>
+                        <div>
+                            <span class="font-bold text-indigo-950">Agentic Reasoning:</span> ${c.agent_reasoning}
+                        </div>
+                    </div>
+
+                    <!-- Message Body -->
+                    <div class="bg-white border border-slate-200 rounded p-3 text-xs text-slate-700 whitespace-pre-line font-mono leading-relaxed">
+                        ${c.body}
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-[11px] text-slate-500">
+                            Sentiment: <strong class="capitalize ${c.sentiment.includes('negative') ? 'text-rose-600' : (c.sentiment.includes('delighted') ? 'text-emerald-600' : 'text-slate-600')}">${c.sentiment}</strong>
+                        </span>
+                        ${c.status === 'draft' ? `
+                            <button onclick="approveComm(${c.id})" class="text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-check"></i> Approve & Send Email
+                            </button>
+                        ` : `
+                            <span class="text-xs text-emerald-700 font-medium flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check"></i> Delivered to Customer
+                            </span>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCustomers(customers) {
+            const tbody = document.getElementById('customers-table-body');
+            if (!customers || customers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">No customers registered yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = customers.map(c => `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="p-3 font-semibold text-slate-900">${c.first_name} ${c.last_name}</td>
+                    <td class="p-3 font-mono text-slate-600">${c.email}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded text-[11px] font-semibold ${
+                            c.lifecycle_stage === 'VIP Customer' ? 'bg-amber-100 text-amber-800' :
+                            c.lifecycle_stage === 'At Risk' ? 'bg-rose-100 text-rose-800' :
+                            c.lifecycle_stage === 'Promising / Loyal' ? 'bg-indigo-100 text-indigo-800' :
+                            'bg-slate-100 text-slate-700'
+                        }">
+                            ${c.lifecycle_stage}
+                        </span>
+                    </td>
+                    <td class="p-3 font-semibold text-slate-900">₹${c.total_spent.toLocaleString('en-IN')}</td>
+                    <td class="p-3 font-semibold">${c.order_count}</td>
+                    <td class="p-3">
+                        <div class="flex flex-wrap gap-1">
+                            ${c.tags.map(t => `<span class="bg-slate-200/70 text-slate-700 text-[10px] px-1.5 py-0.5 rounded font-medium">${t}</span>`).join('')}
+                        </div>
+                    </td>
+                    <td class="p-3 text-slate-400 text-[11px]">${new Date(c.updated_at).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderOrders(orders) {
+            const tbody = document.getElementById('orders-table-body');
+            if (!orders || orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">No orders recorded yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = orders.map(o => `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="p-3 font-mono font-bold text-indigo-600">#${o.woocommerce_order_id}</td>
+                    <td class="p-3 text-slate-800">${o.customer_email}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded text-[10px] uppercase font-semibold ${
+                            o.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
+                            o.status === 'cancelled' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'
+                        }">
+                            ${o.status}
+                        </span>
+                    </td>
+                    <td class="p-3 font-semibold text-slate-900">₹${o.total_amount.toLocaleString('en-IN')}</td>
+                    <td class="p-3 text-slate-700">${o.items.map(i => `${i.name} (x${i.quantity})`).join(', ') || 'N/A'}</td>
+                    <td class="p-3 text-slate-500 italic max-w-xs truncate">${o.customer_notes || '—'}</td>
+                    <td class="p-3 text-slate-400 text-[11px]">${new Date(o.order_date).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function triggerSimulator() {
+            const btn = document.getElementById('sim-btn');
+            const scenario = document.getElementById('sim-scenario').value;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Ingesting Webhook...`;
+
+            try {
+                const res = await fetch('/api/simulator/trigger-order', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ scenario: scenario })
+                });
+                const data = await res.json();
+                showAlert(`Success: WooCommerce event processed! AI agent drafted new workflow.`);
+                await refreshData();
+            } catch (err) {
+                showAlert("Failed to trigger webhook", false);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Send Webhook Event`;
+            }
+        }
+
+        async function seedDemo() {
+            try {
+                const res = await fetch('/api/simulator/seed-demo', { method: 'POST' });
+                const data = await res.json();
+                showAlert(data.message);
+                await refreshData();
+            } catch (err) {
+                showAlert("Seeding failed", false);
+            }
+        }
+
+        async function approveComm(commId) {
+            try {
+                const res = await fetch(`/api/communications/${commId}/send`, { method: 'POST' });
+                const data = await res.json();
+                showAlert(data.message);
+                await refreshData();
+            } catch (err) {
+                showAlert("Failed to send", false);
+            }
+        }
+
+        // Auto-refresh on mount
+        refreshData();
+    </script>
+</body>
+</html>
