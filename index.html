@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartCRM | Customer Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>SmartCRM</h1>
+      <p>Customer relationships, made simpler.</p>
+    </div>
+    <span class="demo-tag">DEMO MODE</span>
+  </header>
+
+  <main class="container">
+    <section class="welcome">
+      <div>
+        <p class="eyebrow">CUSTOMER RELATIONSHIP MANAGEMENT</p>
+        <h2>Your business at a glance</h2>
+        <p>Manage customers, track orders and prepare follow-ups.</p>
+      </div>
+    </section>
+
+    <section class="stats">
+      <article class="stat">
+        <span>Total customers</span>
+        <strong id="customerCount">0</strong>
+      </article>
+      <article class="stat">
+        <span>Total orders</span>
+        <strong id="orderCount">0</strong>
+      </article>
+      <article class="stat">
+        <span>Pending orders</span>
+        <strong id="pendingCount">0</strong>
+      </article>
+      <article class="stat">
+        <span>Total sales (demo)</span>
+        <strong id="salesTotal">₹0</strong>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <h2>Customer directory</h2>
+          <p>Search customers or add a new record.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input id="searchInput" type="search"
+          placeholder="Search name, email or phone..."
+          aria-label="Search customers">
+        <button id="showFormBtn">+ Add customer</button>
+      </div>
+
+      <form id="customerForm" class="customer-form hidden">
+        <h3>New customer</h3>
+        <div class="form-grid">
+          <label>Full name
+            <input id="nameInput" required maxlength="80"
+              placeholder="e.g. Ananya Sharma">
+          </label>
+          <label>Email
+            <input id="emailInput" type="email" required maxlength="120"
+              placeholder="name@example.com">
+          </label>
+          <label>Phone
+            <input id="phoneInput" required maxlength="20"
+              placeholder="Phone number">
+          </label>
+          <label>Customer notes
+            <input id="notesInput" maxlength="240"
+              placeholder="Interests or previous conversation">
+          </label>
+        </div>
+        <div class="actions">
+          <button type="submit">Save customer</button>
+          <button type="button" id="cancelFormBtn" class="secondary">
+            Cancel
+          </button>
+        </div>
+      </form>
+
+      <p id="message" class="message" role="status"></p>
+      <div id="customerList" class="customer-list"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <h2>Order tracking</h2>
+          <p>Example ecommerce orders for demonstration.</p>
+        </div>
+        <select id="orderFilter" aria-label="Filter orders">
+          <option value="All">All statuses</option>
+          <option value="Processing">Processing</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Delivered">Delivered</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Update status</th>
+            </tr>
+          </thead>
+          <tbody id="orderList"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel assistant">
+      <p class="eyebrow">CUSTOMER ENGAGEMENT</p>
+      <h2>Smart follow-up assistant</h2>
+      <p>Choose a customer to generate a summary and suggested message.</p>
+      <div class="toolbar">
+        <select id="assistantCustomer" aria-label="Choose a customer"></select>
+        <button id="generateBtn">Generate suggestions</button>
+      </div>
+      <div id="assistantOutput" class="assistant-output">
+        Your customer summary will appear here.
+      </div>
+      <button id="copyBtn" class="secondary hidden">Copy message</button>
+      <p class="fine-print">
+        Demo assistant: suggestions are generated using local rules,
+        not a live AI model. Review messages before sending.
+      </p>
+    </section>
+
+    <footer>
+      <p>SmartCRM • Student integration challenge prototype</p>
+      <p>Sample data only. No live WooCommerce connection is configured.</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
